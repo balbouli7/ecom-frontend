@@ -9,7 +9,7 @@ const Navbar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
     setUser(null);
     navigate('/login');
   };
@@ -227,8 +227,8 @@ const Navbar = () => {
           />
 
  {/* Sidebar Links */}
-{['Home', 'Products', 'Settings', 'Command']
-  .concat(user?.role === 'admin' ? ['Users'] : []) // Only add "Users" if the logged-in user is an admin
+{['Home', 'Products', 'Settings', 'Command', 'Users']
+   // Only add "Users" if the logged-in user is an admin
   .map((item) => (
     <Link
       key={item}

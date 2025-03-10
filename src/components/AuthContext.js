@@ -1,48 +1,48 @@
-import React, { createContext, useState, useEffect } from 'react';
-import { getCurrentUser } from '../api/userService';
-import { useParams } from 'react-router-dom';
+import React, { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('token') ? true : false);
+  const [isLoggedIn, setIsLoggedIn] = useState(null); // Start as `null` to prevent redirecting too early
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    console.log('Token retrieved in useEffect:', token);
-    if (token) {
+    const token = sessionStorage.getItem("token");
+    const storedUser = sessionStorage.getItem("user");
+
+    if (token && storedUser) {
+      setUser(JSON.parse(storedUser));
       setIsLoggedIn(true);
-      const fetchUserData = async () => {
-        try {
-          const response = await getCurrentUser();
-          // const userData = await response.json();
-          setUser(response);
-        } catch (error) {
-          console.error('Error fetching user data:', error);
-        }
-      };
-      fetchUserData();
     } else {
-      setIsLoggedIn(false);
-      setUser(null);
+      setIsLoggedIn(false); // Ensure we explicitly set it
     }
   }, []);
+
+  const setUserHandler = (user) => {
+    setUser(user);
+    setIsLoggedIn(true);
+    sessionStorage.setItem("user", JSON.stringify(user));
+  };
 
   const login = (userData) => {
     setUser(userData);
     setIsLoggedIn(true);
-    localStorage.setItem('token', userData.token);
+    sessionStorage.setItem("token", userData.token);
+    sessionStorage.setItem("user", JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
     setIsLoggedIn(false);
-    localStorage.removeItem('token');
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
   };
 
+  // Prevent rendering children until `isLoggedIn` is determined
+  if (isLoggedIn === null) return null;
+
   return (
-    <AuthContext.Provider value={{ user, setUser, isLoggedIn, login, logout }}>
+    <AuthContext.Provider value={{ user, isLoggedIn, setUser: setUserHandler, logout, login }}>
       {children}
     </AuthContext.Provider>
   );

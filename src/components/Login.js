@@ -11,47 +11,37 @@ const Login = () => {
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false); 
 
-  const { setUser } = useContext(AuthContext)
-  const navigate = useNavigate()
+  const { setUser } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault()
-    setError("")
-    setLoading(true)
-
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+  
     try {
-      const data = await login(identifier, password)
-      setUser(data.user)
-      localStorage.setItem("token", data.token)
-      navigate("/home")
+      const data = await login(identifier, password);
+      setUser(data.user);
+      sessionStorage.setItem("token", data.token); // Save token to sessionStorage
+      sessionStorage.setItem("user", JSON.stringify(data.user)); // Save user data to sessionStorage
+      navigate("/home");
     } catch (err) {
-      setError(err.response?.data?.error || "Something went wrong")
-      // if (err.message.toLowerCase().includes("Please verify your account before logging in.")) {
-      //   navigate("/verify");
-      // } else {
-      //   setError(err.message);
-      // }
+      setError(err.response?.data?.error || "Something went wrong");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div
-      style={{
-        backgroundImage: 'url(https://img.freepik.com/free-photo/interior-clothing-store-with-stylish-merchandise-racks-fashionable-brand-design-casual-wear-modern-boutique-empty-fashion-showroom-shopping-centre-with-elegant-merchandise_482257-65537.jpg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        minHeight: '100vh',
-        width: "100%",
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        margin: 0,
-        padding: 0,
-        overflow: 'hidden',
-      }}
-    >
+    <div style={{
+      backgroundImage: 'url(https://img.freepik.com/free-photo/interior-clothing-store-with-stylish-merchandise-racks-fashionable-brand-design-casual-wear-modern-boutique-empty-fashion-showroom-shopping-centre-with-elegant-merchandise_482257-65537.jpg)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      minHeight: '100vh',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}>
       <form
         onSubmit={handleLogin}
         style={{
@@ -69,118 +59,61 @@ const Login = () => {
           gap: "20px",
         }}
       >
-        <h2
-          style={{
-            textAlign: "center",
-            color: "#333",
-            marginBottom: "20px",
-            fontSize: "28px",
-            fontWeight: "700",
-            letterSpacing: "-0.5px",
-            color: 'wheat'
-          }}
-        >
+        <h2 style={{ textAlign: "center", color: 'wheat', fontSize: "28px", fontWeight: "700" }}>
           Login to Your Account
         </h2>
-  
+        
         {error && (
-          <div
-            style={{
-              color: "#721c24",
-              backgroundColor: "#f8d7da",
-              padding: "12px",
-              borderRadius: "8px",
-              textAlign: "center",
-              fontSize: "14px",
-              border: "1px solid #f5c6cb",
-            }}
-          >
+          <div style={{
+            color: "#721c24", backgroundColor: "#f8d7da", padding: "12px", borderRadius: "8px", textAlign: "center", fontSize: "14px",
+            border: "1px solid #f5c6cb",
+          }}>
             {error}
           </div>
         )}
-  
-        <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+
+        <input
+          type="text"
+          placeholder="Email or Mobile"
+          value={identifier}
+          onChange={(e) => setIdentifier(e.target.value)}
+          required
+          style={{ padding: "12px 16px", borderRadius: "10px", border: "1px solid #ddd", fontSize: "16px" }}
+        />
+
+        <div style={{ position: "relative" }}>
           <input
-            type="text"
-            placeholder="Email or Mobile"
-            value={identifier}
-            onChange={(e) => setIdentifier(e.target.value)}
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
-            style={{
-              padding: "12px 16px",
-              borderRadius: "10px",
-              border: "1px solid #ddd",
-              fontSize: "16px",
-              outline: "none",
-              transition: "border-color 0.3s, box-shadow 0.3s",
-              backgroundColor: "rgba(255, 255, 255, 0.8)",
-            }}
+            style={{ padding: "12px 16px", borderRadius: "10px", border: "1px solid #ddd", fontSize: "16px", width: "100%" }}
           />
-  
-          <div style={{ position: "relative" }}>
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              style={{
-                padding: "12px 16px",
-                borderRadius: "10px",
-                border: "1px solid #ddd",
-                fontSize: "16px",
-                outline: "none",
-                transition: "border-color 0.3s, box-shadow 0.3s",
-                backgroundColor: "rgba(255, 255, 255, 0.8)",
-                width: "100%",
-              }}
-            />
-            <span
-              onClick={() => setShowPassword(!showPassword)}
-              style={{
-                position: "absolute",
-                right: "10px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                cursor: "pointer",
-                color: "#007bff",
-                fontSize: "20px",
-              }}
-            >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </span>
-          </div>
-  
-          <button
-            type="submit"
-            style={{
-              padding: "14px",
-              borderRadius: "10px",
-              border: "none",
-              backgroundColor: "#007bff",
-              color: "#fff",
-              fontSize: "16px",
-              fontWeight: "600",
-              cursor: "pointer",
-              transition: "background 0.3s, transform 0.2s",
-              marginTop: "10px",
-            }}
-            disabled={loading}
+          <span
+            onClick={() => setShowPassword(!showPassword)}
+            style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", cursor: "pointer", color: "#007bff" }}
           >
-            {loading ? "Logging in..." : "Login"}
-          </button>
-          
-          <a href="/forgetpassword" style={{ textAlign: "center", color: "#007bff", marginTop: "10px"}}>
-            Forgot Password?
-          </a>
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
         </div>
-  
+
+        <button
+          type="submit"
+          style={{ padding: "14px", borderRadius: "10px", backgroundColor: "#007bff", color: "#fff", fontSize: "16px" }}
+          disabled={loading}
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
+
+        <a href="/forgetpassword" style={{ color: "#007bff", marginTop: "10px", textAlign: "center" }}>Forgot Password?</a>
+
         <p style={{ textAlign: "center", marginTop: "20px" }}>
           Don't have an account? <a href="/register" style={{ color: "#007bff" }}>Sign up</a>
         </p>
       </form>
     </div>
   );
-}
+};
 
 export default Login;

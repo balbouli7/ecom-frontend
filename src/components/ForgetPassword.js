@@ -1,23 +1,22 @@
-import React, { useState } from "react"
-import { forgetPassword } from "../api/userService"
+import React, { useState } from 'react';
+import { forgetPassword } from '../api/userService';
 
 const ForgetPassword = () => {
-  const [email, setEmail] = useState("")
-  const [message, setMessage] = useState("")
-  const [error, setError] = useState("")
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      const response = await forgetPassword(email)
-      localStorage.setItem("resetEmail", email)
-      setMessage(response.message)
-      setError("")
-    } catch (error) {
-      setError("Error sending reset email. Please try again.")
-      setMessage("")
+      setMessage('');
+      setError('');
+      const data = await forgetPassword(email);
+      setMessage(data.message);
+    } catch (err) {
+      setError(err.message);
     }
-  }
+  };
 
   return (
     <div
@@ -139,4 +138,4 @@ const ForgetPassword = () => {
   )
 }
 
-export default ForgetPassword
+export default ForgetPassword;

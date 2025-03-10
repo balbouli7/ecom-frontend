@@ -42,7 +42,7 @@ export const login = async (identifier, password) => {
 
 export const getCurrentUser = async (userId) => {
   try {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const response = await axios.get(`${API_URL}/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -86,7 +86,7 @@ export const deleteUser=async(id,)=>{
 
 export const getStById = async (userId) => {
   try {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const response = await axios.get(`${API_URL}/get/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -105,10 +105,9 @@ export const forgetPassword = async (email) => {
     const response = await axios.post(`${API_URL}/forgetpassword`, { email });
     return response.data;
   } catch (error) {
-    console.error("Error requesting password reset:", error);
-    throw error;
+    throw error.response.data;
   }
-}
+};
 
 export const resetPassword = async (token, email, newPassword) => {
   try {
@@ -118,10 +117,9 @@ export const resetPassword = async (token, email, newPassword) => {
     );
     return response.data;
   } catch (error) {
-    console.error("Error resetting password:", error)
-    throw error;
+    throw error.response.data;
   }
-}
+};
 export const searchUser = async (searchParams) => {
   try {
     const { fullName, email, mobile, id, role } = searchParams
@@ -140,3 +138,16 @@ export const searchUser = async (searchParams) => {
     throw error
   }
 }
+
+export const updatePassword = async (email, currentPassword, newPassword) => {
+  try {
+    const response = await axios.put(
+      `${API_URL}/update_password`,
+      { email, currentPassword, newPassword },
+      { headers: { 'Content-Type': 'application/json' } }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response ? error.response.data.message : error.message);
+  }
+};

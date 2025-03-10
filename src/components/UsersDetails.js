@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { getStById } from "../api/userService"
 
 const UserDetails = () => {
   const { userId } = useParams()
   const [user, setUser] = useState(null)
-
+const navigate=useNavigate()
   const fetchUser = async () => {
     try {
       const data = await getStById(userId)
@@ -17,7 +17,7 @@ const UserDetails = () => {
 
   useEffect(() => {
     fetchUser()
-  }, [userId])
+  }, [userId,fetchUser])
 
   if (!user) {
     return (
@@ -115,7 +115,23 @@ const UserDetails = () => {
           <span style={{ fontWeight: "bold", color: "#ffcc70", marginRight: "5px" }}>Role:</span>
           {user.role}
         </div>
-      </div>
+        <button
+  onClick={() => navigate("/users")}
+  style={{
+    backgroundColor: "#4CAF50",
+    color: "white",
+    padding: "10px 20px",
+    fontSize: "16px",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    transition: "background-color 0.3s ease",
+  }}
+  onMouseOver={(e) => (e.target.style.backgroundColor = "#45a049")}
+  onMouseOut={(e) => (e.target.style.backgroundColor = "#4CAF50")}
+>
+  Back
+</button>      </div>
     </div>
   )
 }

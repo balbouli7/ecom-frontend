@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getAllUsers } from "../api/userService";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 
 const GetAllUsers = ({ onDelete }) => {
@@ -19,8 +19,9 @@ const GetAllUsers = ({ onDelete }) => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
+    if (window.confirm("Are you sure you want to delete this user?")) {
       await onDelete(id);
+      alert("user deleted")
       fetchUsers();
     }
   };
@@ -37,17 +38,18 @@ const GetAllUsers = ({ onDelete }) => {
         justifyContent: "center",
         alignItems: "center",
         minHeight: "100vh",
-        background: "#f5f5f5",  // Light gray background
+        background: "#1e1e1e", // Dark background
         padding: "20px",
-        fontFamily: "'Inter', sans-serif",  // Modern font
+        fontFamily: "'Inter', sans-serif",
+        color: "#e0e0e0",
       }}
     >
       <div
         style={{
-          background: "#fff",  // White background for the container
-          padding: "40px",
+          background: "#2a2a2a", // Darker container
+          padding: "30px",
           borderRadius: "12px",
-          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",  // Soft shadow
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
           width: "100%",
           maxWidth: "1200px",
         }}
@@ -55,15 +57,15 @@ const GetAllUsers = ({ onDelete }) => {
         <h2
           className="text-center mb-4"
           style={{
-            fontWeight: '600',
-            fontSize: '28px',
-            color: "#333",  // Dark gray for text
+            fontWeight: "600",
+            fontSize: "24px",
+            color: "#ffffff",
           }}
         >
           Users List
         </h2>
 
-        {/* Search Bar */}
+        {/* Search and Filter */}
         <div className="mb-4 d-flex align-items-center">
           <input
             type="text"
@@ -73,9 +75,11 @@ const GetAllUsers = ({ onDelete }) => {
             style={{
               padding: "10px",
               borderRadius: "6px",
-              border: "1px solid #e9ecef",
+              border: "1px solid #3a3a3a",
               flex: 1,
               marginRight: "10px",
+              background: "#1e1e1e",
+              color: "#e0e0e0",
             }}
           />
           <select
@@ -84,123 +88,99 @@ const GetAllUsers = ({ onDelete }) => {
             style={{
               padding: "10px",
               borderRadius: "6px",
-              border: "1px solid #e9ecef",
-              backgroundColor: "#fff",
+              border: "1px solid #3a3a3a",
+              backgroundColor: "#1e1e1e",
+              color: "#e0e0e0",
             }}
           >
             <option value="fullName">Full Name</option>
             <option value="email">Email</option>
             <option value="mobile">Mobile</option>
-            <option value="id">ID</option>
             <option value="role">Role</option>
             <option value="address">Address</option>
           </select>
         </div>
 
         {/* Table */}
-        <div
-          className="table-container"
-          style={{
-            borderRadius: "8px",
-            overflow: "hidden",
-          }}
-        >
-          <table
-            className="table table-responsive-sm"
-            style={{
-              color: '#333',
-              fontSize: '16px',
-              borderCollapse: 'collapse',
-              textAlign: 'center',
-              width: "100%",
-            }}
-          >
-            <thead
-              style={{
-                background: "#f8f9fa",  // Light gray for header
-                fontWeight: "600",
-                borderBottom: "2px solid #e9ecef",  // Subtle border
-              }}
-            >
+        <div className="table-responsive">
+          <table className="table table-dark table-hover">
+            <thead>
               <tr>
-                <th style={{ padding: "16px" }}>#</th>
-                <th style={{ padding: "16px" }}>Full Name</th>
-                <th style={{ padding: "16px" }}>Email</th>
-                <th style={{ padding: "16px" }}>Mobile</th>
-                <th style={{ padding: "16px" }}>Address</th>
-                <th style={{ padding: "16px" }}>Role</th>
-                <th style={{ padding: "16px" }}>Creation Date</th>
-                <th style={{ padding: "16px" }}>Updating Date</th>
-                <th style={{ padding: "16px" }}>Actions</th>
+                <th>#</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Address</th>
+                <th>Role</th>
+                <th>Creation Date</th>
+                <th>Updating Date</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredUsers.map((user, index) => (
-                <tr
-                  key={user._id}
-                  style={{
-                    borderBottom: "1px solid #e9ecef",  // Subtle border for rows
-                    transition: "background 0.2s ease",  // Smooth hover effect
-                  }}
-                  onMouseOver={(e) => (e.currentTarget.style.background = "#f8f9fa")}  // Light gray on hover
-                  onMouseOut={(e) => (e.currentTarget.style.background = "#fff")}  // White on mouse out
-                >
-                  <td style={{ padding: "16px" }}>{index + 1}</td>
-                  <td style={{ padding: "16px" }}>{user.fullName}</td>
-                  <td style={{ padding: "16px" }}>{user.email}</td>
-                  <td style={{ padding: "16px" }}>{user.mobile}</td>
-                  <td style={{ padding: "16px" }}>{user.address}</td>
-                  <td style={{ padding: "16px" }}>{user.role}</td>
-                  <td style={{ padding: "16px" }}>{new Date(user.createdAt).toLocaleDateString()}</td>
-                  <td style={{ padding: "16px" }}>{new Date(user.updatedAt).toLocaleDateString()}</td>
-                  <td style={{ padding: "16px" }}>
+                <tr key={user._id}>
+                  <td>{index + 1}</td>
+                  <td>{user.fullName}</td>
+                  <td>{user.email}</td>
+                  <td>{user.mobile}</td>
+                  <td>{user.address}</td>
+                  <td>{user.role}</td>
+                  <td>{new Date(user.createdAt).toLocaleDateString()}</td>
+                  <td>{new Date(user.updatedAt).toLocaleDateString()}</td>
+                  <td>
+                    {/* View Button */}
                     <button
-                      className="btn btn-info btn-sm me-2"
+                      className="btn btn-sm me-2"
                       style={{
-                        backgroundColor: '#17a2b8',
-                        border: 'none',
-                        color: '#fff',
-                        borderRadius: '6px',
-                        padding: '8px 16px',
-                        transition: 'all 0.3s ease',
+                        backgroundColor: "#4CAF50",
+                        color: "#fff",
+                        borderRadius: "6px",
+                        padding: "6px 12px",
+                        fontSize: "14px",
+                        transition: "0.3s",
                       }}
                       onClick={() => navigate(`/users/details/${user._id}`)}
-                      onMouseOver={(e) => (e.target.style.backgroundColor = '#138496')}
-                      onMouseOut={(e) => (e.target.style.backgroundColor = '#17a2b8')}
+                      onMouseOver={(e) => (e.target.style.backgroundColor = "#45a049")}
+                      onMouseOut={(e) => (e.target.style.backgroundColor = "#4CAF50")}
                     >
-                      View
+                      👁 View
                     </button>
+
+                    {/* Edit Button */}
                     <button
-                      className="btn btn-warning btn-sm me-2"
+                      className="btn btn-sm me-2"
                       style={{
-                        backgroundColor: '#ffc107',
-                        border: 'none',
-                        color: '#fff',
-                        borderRadius: '6px',
-                        padding: '8px 16px',
-                        transition: 'all 0.3s ease',
+                        backgroundColor: "#FFA500",
+                        color: "#fff",
+                        borderRadius: "6px",
+                        padding: "6px 12px",
+                        fontSize: "14px",
+                        transition: "0.3s",
                       }}
                       onClick={() => navigate(`updateUser/${user._id}`)}
-                      onMouseOver={(e) => (e.target.style.backgroundColor = '#e0a800')}
-                      onMouseOut={(e) => (e.target.style.backgroundColor = '#ffc107')}
+                      onMouseOver={(e) => (e.target.style.backgroundColor = "#e69500")}
+                      onMouseOut={(e) => (e.target.style.backgroundColor = "#FFA500")}
                     >
-                      Edit
+                      ✏️ Edit
                     </button>
+
+                    {/* Delete Button */}
                     <button
-                      className="btn btn-danger btn-sm"
+                      className="btn btn-sm"
                       style={{
-                        backgroundColor: '#dc3545',
-                        border: 'none',
-                        color: '#fff',
-                        borderRadius: '6px',
-                        padding: '8px 16px',
-                        transition: 'all 0.3s ease',
+                        backgroundColor: "#d9534f",
+                        color: "#fff",
+                        borderRadius: "6px",
+                        padding: "6px 12px",
+                        fontSize: "14px",
+                        transition: "0.3s",
                       }}
                       onClick={() => handleDelete(user._id)}
-                      onMouseOver={(e) => (e.target.style.backgroundColor = '#c82333')}
-                      onMouseOut={(e) => (e.target.style.backgroundColor = '#dc3545')}
+                      onMouseOver={(e) => (e.target.style.backgroundColor = "#c9302c")}
+                      onMouseOut={(e) => (e.target.style.backgroundColor = "#d9534f")}
                     >
-                      Delete
+                      ❌ Delete
                     </button>
                   </td>
                 </tr>

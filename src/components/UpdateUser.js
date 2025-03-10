@@ -1,13 +1,16 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getCurrentUser, getStById, updateUser } from "../api/userService";
+import { getStById, updateUser } from "../api/userService";
+import { AuthContext } from "./AuthContext";
 
 export const UpdateUser = () => {
+    const { user } = useContext(AuthContext);
     const { userId } = useParams();
-    const [fullName, setFullName] = useState("");
-    const [email, setEmail] = useState("");
-    const [mobile, setMobile] = useState("");
-    const [address, setAddress] = useState("");
+    const [fullName, setFullName] = useState(user?.fullName || '');
+    const [email, setEmail] = useState(user?.email || '');
+    const [mobile, setMobile] = useState(user?.mobile || '');
+    const [address, setAddress] = useState(user?.address || '');
+    
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -51,8 +54,8 @@ export const UpdateUser = () => {
             if (response) {
                 setMessage("User updated successfully!");
                 setTimeout(() => {
-                    navigate("/users"); 
-                }, 2000);
+                    navigate("/users");
+                }, 1000);
             } else {
                 setMessage("Server Error. Try again.");
             }
@@ -66,44 +69,32 @@ export const UpdateUser = () => {
     return (
         <div
             style={{
-                backgroundImage: 'url(https://source.unsplash.com/1600x900/?technology,abstract)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                minHeight: '100vh',
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                margin: 0,
-                padding: 0,
-                overflow: 'hidden',
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: "100vh",
+                background: "linear-gradient(to right, #141e30, #243b55)",
+                padding: "20px",
             }}
         >
             <form
                 onSubmit={updateSubmit}
                 style={{
-                    maxWidth: '500px',
-                    width: '100%',
-                    margin: '20px',
-                    padding: '30px',
-                    borderRadius: '15px',
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
-                    backgroundColor: 'rgba(255, 255, 255, 0)',
-                    backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255, 255, 255, 0.3)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '15px',
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    backdropFilter: "blur(10px)",
+                    padding: "30px",
+                    borderRadius: "15px",
+                    boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
+                    color: "wheat",
+                    maxWidth: "400px",
+                    width: "100%",
+                    textAlign: "center",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "15px",
                 }}
             >
-                <h2
-                    style={{
-                        textAlign: 'center',
-                        color: 'wheat',
-                        fontSize: '28px',
-                        fontWeight: '700',
-                    }}
-                >
+                <h2 style={{ fontSize: "24px", marginBottom: "15px", fontWeight: "700" }}>
                     Update User Info
                 </h2>
 
@@ -126,7 +117,7 @@ export const UpdateUser = () => {
                 <input
                     type="text"
                     placeholder="Full Name"
-                    value={fullName}
+                    value={fullName || ''}
                     onChange={(e) => setFullName(e.target.value)}
                     required
                     style={inputStyle}
@@ -159,24 +150,20 @@ export const UpdateUser = () => {
                 <button
                     type="submit"
                     disabled={loading}
-                    style={{
-                        padding: '14px',
-                        borderRadius: '10px',
-                        border: 'none',
-                        backgroundColor: '#007bff',
-                        color: '#fff',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        cursor: 'pointer',
-                        transition: 'background 0.3s, transform 0.2s',
-                        marginTop: '10px',
-                    }}
-                    onMouseOver={(e) => (e.target.style.backgroundColor = '#0056b3')}
-                    onMouseOut={(e) => (e.target.style.backgroundColor = '#007bff')}
-                    onMouseDown={(e) => (e.target.style.transform = 'scale(0.98)')}
-                    onMouseUp={(e) => (e.target.style.transform = 'scale(1)')}
+                    style={buttonStyle}
+                    onMouseOver={(e) => (e.target.style.backgroundColor = "#45a049")}
+                    onMouseOut={(e) => (e.target.style.backgroundColor = "#4CAF50")}
                 >
                     {loading ? "Updating..." : "Update"}
+                </button>
+                <button
+                    type="button"
+                    onClick={() => navigate("/users")}
+                    style={backButtonStyle}
+                    onMouseOver={(e) => (e.target.style.backgroundColor = "#ff6347")}
+                    onMouseOut={(e) => (e.target.style.backgroundColor = "#ff4500")}
+                >
+                    Cancel
                 </button>
             </form>
         </div>
@@ -184,14 +171,38 @@ export const UpdateUser = () => {
 };
 
 const inputStyle = {
-    padding: '12px 16px',
-    borderRadius: '10px',
-    border: '1px solid #ddd',
-    fontSize: '16px',
-    outline: 'none',
-    transition: 'border-color 0.3s, box-shadow 0.3s',
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    width: '100%',
+    padding: "12px 16px",
+    borderRadius: "10px",
+    border: "1px solid rgba(255, 255, 255, 0.2)",
+    fontSize: "16px",
+    outline: "none",
+    transition: "border-color 0.3s, box-shadow 0.3s",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    color: "wheat",
+    width: "100%",
+    textAlign: "center",
+};
+
+const buttonStyle = {
+    backgroundColor: "#4CAF50",
+    color: "white",
+    padding: "10px 20px",
+    fontSize: "16px",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    transition: "background-color 0.3s ease",
+};
+
+const backButtonStyle = {
+    backgroundColor: "#ff4500",
+    color: "white",
+    padding: "10px 20px",
+    fontSize: "16px",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    transition: "background-color 0.3s ease",
 };
 
 export default UpdateUser;
